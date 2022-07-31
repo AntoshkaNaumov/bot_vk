@@ -1,5 +1,4 @@
 import sqlalchemy as sq
-from sqlalchemy import PrimaryKeyConstraint
 from sqlalchemy.orm import declarative_base, relationship
 
 Base = declarative_base()
@@ -44,7 +43,7 @@ class Black_list(Base):
     Partners_list = relationship(Partners_list, backref='Black_list')
 
     __table_args__ = (
-        PrimaryKeyConstraint(
+        sq.PrimaryKeyConstraint(
             partner_vk_id,
             user_vk_id),
         {})
@@ -58,12 +57,12 @@ class Favorite_partners(Base):
     Partners = relationship(Partners, backref='Favorite_partners')
 
     __table_args__ = (
-        PrimaryKeyConstraint(
+        sq.PrimaryKeyConstraint(
             partner_vk_id,
             user_vk_id),
         {})
 
 
 def create_tables(engine):
-    #Base.metadata.drop_all(engine)  #----удаляет все существующие таблицы перед созданием---
+    Base.metadata.drop_all(engine)  #----удаляет все существующие таблицы перед созданием---
     Base.metadata.create_all(engine)

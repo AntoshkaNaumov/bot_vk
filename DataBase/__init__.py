@@ -1,20 +1,17 @@
-import sqlalchemy
-from sqlalchemy.orm import sessionmaker
+from DataBase.models import create_tables
+from write_db import write_user_vk, create_engine, write_partners, write_photos, \
+    write_partner, write_partners_list, write_favorite_partners, write_black_list, read_password
 
-from DataBase.models import create_tables, User_vk, Black_list, Favorite_partners, Photos
-
-password = ''
-DSN = f'postgresql://postgres:{password}@localhost:5432/VK_base'
-engine = sqlalchemy.create_engine(DSN)
 
 if __name__ == '__main__':
-    create_tables(engine)
-
-    # Session = sessionmaker(bind=engine)
-    # session = Session()
-    #
-    # session.close()
-
+    create_tables(create_engine(read_password()))
+    write_user_vk(126757, 'Vasya', 'Popkin')
+    write_partners(456742, 'Lena', 'Arena', 'https://netology.ru/1')
+    write_photos(456742, 'https://netology.ru/2')
+    write_partner(334532, 'Alena', 'Dustova', 'https://netology.ru/3', 'https://netology.ru/4')
+    write_partners_list(999888)
+    write_favorite_partners(126757, 456742)
+    write_black_list(126757, 999888)
 
 
 
