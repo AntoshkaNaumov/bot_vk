@@ -1,4 +1,5 @@
 import sqlalchemy as sq
+from sqlalchemy import PrimaryKeyConstraint
 from sqlalchemy.orm import declarative_base, relationship
 
 Base = declarative_base()
@@ -12,36 +13,57 @@ class User_vk(Base):
     surname = sq.Column(sq.String(length=20))
 
 
-class Black_list(Base):
-    __tablename__ = 'Black_list'
-
-    partner_vk_id = sq.Column(sq.Integer, primary_key=True)
-    user_vk_id = sq.Column(sq.Integer, sq.ForeignKey('User_vk.user_vk_id'), nullable=False)
-
-    User_vk = relationship(User_vk, backref='Black_list')
-
-
-class Favorite_partners(Base):
-    __tablename__ = 'Favorite_partners'
+class Partners(Base):
+    __tablename__ = 'Partners'
 
     partner_vk_id = sq.Column(sq.Integer, primary_key=True)
     name = sq.Column(sq.String(length=20))
     surname = sq.Column(sq.String(length=20))
-    user_vk_id = sq.Column(sq.Integer, sq.ForeignKey('User_vk.user_vk_id'), nullable=False)
-
-    User_vk = relationship(User_vk, backref='Favorite_partners')
-
+    profile_link = sq.Column(sq.String, nullable=False)
 
 class Photos(Base):
     __tablename__ = 'Photos'
 
     photo_id = sq.Column(sq.Integer, primary_key=True)
     photo_link = sq.Column(sq.String, nullable=False)
-    partner_vk_id = sq.Column(sq.Integer, sq.ForeignKey('Favorite_partners.partner_vk_id'), nullable=False)
+    partner_vk_id = sq.Column(sq.Integer, sq.ForeignKey('Partners.partner_vk_id'), nullable=False)
 
-    Favorite_partners = relationship(Favorite_partners, backref='Photos')
+    Partners = relationship(Partners, backref='Photos')
+
+class Partners_list(Base):
+    __tablename__ = 'Partners_list'
+
+    partner_vk_id = sq.Column(sq.Integer, primary_key=True)
+
+class Black_list(Base):
+    __tablename__ = 'Black_list'
+
+    user_vk_id = sq.Column(sq.Integer, sq.ForeignKey('User_vk.user_vk_id', ondelete='CASCADE'), nullable=False)
+    partner_vk_id = sq.Column(sq.Integer, sq.ForeignKey('Partners_list.partner_vk_id', ondelete='CASCADE'), nullable=False)
+    User_vk = relationship(User_vk, backref='Black_list')
+    Partners_list = relationship(Partners_list, backref='Black_list')
+
+    __table_args__ = (
+        PrimaryKeyConstraint(
+            partner_vk_id,
+            user_vk_id),
+        {})
+
+class Favorite_partners(Base):
+    __tablename__ = 'Favorite_partners'
+
+    user_vk_id = sq.Column(sq.Integer, sq.ForeignKey('User_vk.user_vk_id', ondelete='CASCADE'), nullable=False)
+    partner_vk_id = sq.Column(sq.Integer, sq.ForeignKey('Partners.partner_vk_id', ondelete='CASCADE'), nullable=False)
+    User_vk = relationship(User_vk, backref='Favorite_partners')
+    Partners = relationship(Partners, backref='Favorite_partners')
+
+    __table_args__ = (
+        PrimaryKeyConstraint(
+            partner_vk_id,
+            user_vk_id),
+        {})
 
 
 def create_tables(engine):
-    # Base.metadata.drop_all(engine)  #----удаляет все существующие таблицы перед созданием---
+    #Base.metadata.drop_all(engine)  #----удаляет все существующие таблицы перед созданием---
     Base.metadata.create_all(engine)
