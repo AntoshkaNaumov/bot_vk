@@ -20,6 +20,10 @@ class Partners(Base):
     surname = sq.Column(sq.String(length=20))
     profile_link = sq.Column(sq.String, nullable=False)
 
+    def info(self):
+        return [self.name, self.surname, self.profile_link]
+
+
 class Photos(Base):
     __tablename__ = 'Photos'
 
@@ -29,16 +33,22 @@ class Photos(Base):
 
     Partners = relationship(Partners, backref='Photos')
 
+    def info(self):
+        return self.photo_link
+
+
 class Partners_list(Base):
     __tablename__ = 'Partners_list'
 
     partner_vk_id = sq.Column(sq.Integer, primary_key=True)
 
+
 class Black_list(Base):
     __tablename__ = 'Black_list'
 
     user_vk_id = sq.Column(sq.Integer, sq.ForeignKey('User_vk.user_vk_id', ondelete='CASCADE'), nullable=False)
-    partner_vk_id = sq.Column(sq.Integer, sq.ForeignKey('Partners_list.partner_vk_id', ondelete='CASCADE'), nullable=False)
+    partner_vk_id = sq.Column(sq.Integer, sq.ForeignKey('Partners_list.partner_vk_id', ondelete='CASCADE'),
+                              nullable=False)
     User_vk = relationship(User_vk, backref='Black_list')
     Partners_list = relationship(Partners_list, backref='Black_list')
 
@@ -47,6 +57,12 @@ class Black_list(Base):
             partner_vk_id,
             user_vk_id),
         {})
+
+    def __str__(self):
+        return f'Black_list: (USER_VK_ID: {self.user_vk_id}, PARTNER_VK_ID: {self.partner_vk_id})'
+
+    def info(self):
+        return self.partner_vk_id
 
 class Favorite_partners(Base):
     __tablename__ = 'Favorite_partners'
@@ -62,7 +78,13 @@ class Favorite_partners(Base):
             user_vk_id),
         {})
 
+    def __str__(self):
+        return f'Favorite_partners: (USER_VK_ID: {self.user_vk_id}, PARTNER_VK_ID: {self.partner_vk_id})'
+
+    def info(self):
+        return self.partner_vk_id
+
 
 def create_tables(engine):
-    Base.metadata.drop_all(engine)  #----удаляет все существующие таблицы перед созданием---
+    Base.metadata.drop_all(engine)  # ----удаляет все существующие таблицы перед созданием---
     Base.metadata.create_all(engine)
