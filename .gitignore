@@ -2,3 +2,6 @@
 .idea/
 **/__pycache__
 __pycache__/
+venv/
+tokens_my.txt
+password_db_my.txt

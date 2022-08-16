@@ -1,59 +1,38 @@
-import vk_api
-from vk_api.longpoll import VkLongPoll, VkEventType
-from vk_api.keyboard import VkKeyboard, VkKeyboardColor
-from application.vk_bot import VkBot
-from random import randrange
+from application.vk_bot import VK
+from DataBase.models import create_tables
+import os
 
+file = os.path.join(os.getcwd(), 'tokens.txt')
 
-def write_msg(user_id, message):
-    """Функция write_msg получает id пользователя ВК <user_id>,
-     которому оно отправит сообщение и собственно само сообщение"""
-    vk.method('messages.send', {'user_id': user_id, 'message': message, 'random_id': randrange(10 ** 7),
-                                'keyboard': keyboard.get_keyboard()})
+with open(file, mode='r', encoding='utf-8') as f:
+    group_id = f.readline().strip()
+    group_token = f.readline().strip()
+    ind_token = f.readline().strip()
 
+user_vk = VK(group_id=group_id,
+             token=group_token,
+             ind_token=ind_token)
 
-GROUP_ID = '214771295'
-# API-ключ
-token = 'vk1.a.acscNKsdVoIAwaRfAyPAEx2oq4bNmklARhMiC-zsOP8jfdJj9wFcfPYr4GuMRxbYCo4qCGwGilMy2s6kq8puKHcGTrg0ogU' \
-        '2DnlDrJ0ixdXgU-oGMf_asN3K_f7JpQQPJHrscsk0QbKelNZMB35RGIeCJP8VxvsEAtdjFBtO_bmElKv7oqcL8mZc_h9DPIQO'
-API_VERSION = '5.131'
+list_command = {
+    'create': 'Создание новой БД',
+    'bot': 'Запуск бота'
+}
 
-# Запускаем бот
-vk = vk_api.VkApi(token=token, api_version=API_VERSION)
+print('Cписок команд:')
+for k, v in list_command.items():
+    print(f' Команда: {k} - действие:  {v}')
 
-longpoll = VkLongPoll(vk, group_id=GROUP_ID)
+command = input('Введите команду: ')
+count = 0
+while count == 0:
+    if command == 'create':
+        create_tables()
+        print('Таблицы созданы')
+        command = input('Введите команду bot: ')
 
-
-print('Server started')
-while True:
-    for event in longpoll.listen():
-        if event.type == VkEventType.MESSAGE_NEW:
-            if event.to_me:
-                print('New message:')
-                print(f'For me by: {event.user_id}', end='')
-
-                bot = VkBot(event.user_id)
-
-                keyboard = VkKeyboard(one_time=False)
-
-                keyboard.add_button(label='Поиск', color=VkKeyboardColor.POSITIVE,
-                                    payload={'type': 'search', 'text': 'Ищем'})
-                keyboard.add_line()
-                keyboard.add_button(label='Избранное', color=VkKeyboardColor.POSITIVE,
-                                    payload={'type': 'favorites', 'text': 'Фавориты'})
-                keyboard.add_button(label='Чёрный список', color=VkKeyboardColor.SECONDARY,
-                                    payload={'type': 'black_list', 'text': 'Черный список'})
-                keyboard.add_line()
-                keyboard.add_button(label='Предыдущий', color=VkKeyboardColor.PRIMARY,
-                                    payload={'type': 'previous', 'text': 'Ищем'})
-                keyboard.add_button(label='Следующий', color=VkKeyboardColor.PRIMARY,
-                                    payload={'type': 'next', 'text': 'Ищем'})
-                keyboard.add_line()
-                keyboard.add_button(label='В избранное', color=VkKeyboardColor.POSITIVE,
-                                    payload={'type': 'show_snackbar', 'text': 'Добавлен в избранное'})
-
-                keyboard.add_button(label='В чёрный список', color=VkKeyboardColor.SECONDARY,
-                                    payload={'type': 'show_snackbar', 'text': 'Добавлен в черный список'})
-                write_msg(event.user_id, bot.new_message(event.text))
-
-                print('Text: ', event.text)
+    elif command == 'bot':
+        print('Бот запущен')
+        user_vk.vk_bot()
+        count = 1
+    else:
+        command = input('Введите правильную команду: ')
