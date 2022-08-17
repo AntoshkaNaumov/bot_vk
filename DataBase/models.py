@@ -1,12 +1,7 @@
 import sqlalchemy as sq
 from sqlalchemy.orm import declarative_base, relationship
-import os
 
 Base = declarative_base()
-
-file = os.path.join(os.getcwd(), 'password_db.txt')
-with open(file, mode='r', encoding='utf-8') as f:
-    password_base = f.readline().strip()
 
 
 class User_vk(Base):
@@ -50,7 +45,6 @@ class Favorite_partners(Base):
         return self.partner_vk_id
 
 
-def create_tables():
-    engine = sq.create_engine(f'postgresql://postgres:{password_base}@localhost:5432/vk_base')
-    Base.metadata.drop_all(engine)  # ----удаляет все существующие таблицы перед созданием---
+def create_tables(password):
+    engine = sq.create_engine(f'postgresql://postgres:{password}@localhost:5432/vk_base')
     Base.metadata.create_all(engine)

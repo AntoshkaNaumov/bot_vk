@@ -1,5 +1,6 @@
 from application.vk_bot import VK
 from DataBase.models import create_tables
+from DataBase.write_db import read_password
 import os
 
 file = os.path.join(os.getcwd(), 'tokens.txt')
@@ -26,7 +27,7 @@ command = input('Введите команду: ')
 count = 0
 while count == 0:
     if command == 'create':
-        create_tables()
+        create_tables(read_password())
         print('Таблицы созданы')
         command = input('Введите команду bot: ')
 

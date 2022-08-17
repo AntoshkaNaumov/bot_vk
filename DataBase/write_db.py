@@ -26,7 +26,6 @@ def decorator_session_write(foo):
         session.commit()
         session.close()
         return result
-
     return new_foo
 
 

@@ -20,7 +20,6 @@ def read_favorite_partners(user_vk_id):
 def read_favorite_partners_all(partner_vk_id):
     """На вход ID партнера, возвращает список избранных в формате:
     dict[id_partner] = [имя, фамилия]"""
-    # Возможны изменения, функция декоративная, нужна только для информационного вывода избранных партнеров
 
     Session = sessionmaker(bind=create_engine(read_password()))
     session = Session()
