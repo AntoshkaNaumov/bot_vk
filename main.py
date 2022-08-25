@@ -1,6 +1,6 @@
 from application.vk_bot import VK
-from DataBase.models import create_tables
-from DataBase.write_db import read_password
+from database.models import create_tables
+from database.write_db import read_password
 import os
 
 file = os.path.join(os.getcwd(), 'tokens.txt')

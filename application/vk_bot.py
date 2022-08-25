@@ -4,8 +4,8 @@ import requests
 from vk_api.longpoll import VkLongPoll, VkEventType
 from vk_api.keyboard import VkKeyboard, VkKeyboardColor
 from vk_api import VkUpload
-from DataBase.write_db import write_user_vk, write_partners, write_favorite_partners
-from DataBase.read_db import read_favorite_partners, user_vk_search, read_favorite_partners_all, user_vk_partner_search
+from database.write_db import write_user_vk, write_partners, write_favorite_partners
+from database.read_db import read_favorite_partners, user_vk_search, read_favorite_partners_all, user_vk_partner_search
 
 
 class VK:
@@ -112,7 +112,8 @@ class VK:
                         print(len(res_partner.json()['response']['items']))
 
                         if len(res_partner.json()['response']['items']) > 0:
-                            if not res_partner.json()['response']['items'][0]['is_closed'] and not user_vk_partner_search(id_user, res_partner.json()['response']['items'][0]['id']):
+                            if not res_partner.json()['response']['items'][0]['is_closed'] and not \
+                                    user_vk_partner_search(id_user, res_partner.json()['response']['items'][0]['id']):
                                 if res_partner.json()['response']['items'][0]['id'] not in local_ids_list:
                                     count = 1
                                     result_id = res_partner.json()['response']['items'][0]['id']

@@ -1,5 +1,5 @@
 import sqlalchemy
-from DataBase.models import User_vk, Favorite_partners, Partners
+from database.models import UserVk, FavoritePartners, Partners
 from sqlalchemy.orm import sessionmaker
 import os
 
@@ -32,7 +32,7 @@ def decorator_session_write(foo):
 @decorator_session_write
 def write_user_vk(user_vk_id, name, surname):
     """Запись в таблицу User_vk"""
-    result = User_vk(user_vk_id=user_vk_id, name=name, surname=surname)
+    result = UserVk(user_vk_id=user_vk_id, name=name, surname=surname)
     return result
 
 
@@ -46,5 +46,5 @@ def write_partners(partner_vk_id, name, surname, profile_link):
 @decorator_session_write
 def write_favorite_partners(user_vk_id, partner_vk_id):
     """Запись в таблицу Favorite_partners"""
-    result = Favorite_partners(user_vk_id=user_vk_id, partner_vk_id=partner_vk_id)
+    result = FavoritePartners(user_vk_id=user_vk_id, partner_vk_id=partner_vk_id)
     return result

@@ -4,7 +4,7 @@ from sqlalchemy.orm import declarative_base, relationship
 Base = declarative_base()
 
 
-class User_vk(Base):
+class UserVk(Base):
     __tablename__ = 'user_vk'
 
     user_vk_id = sq.Column(sq.Integer, primary_key=True)
@@ -24,12 +24,12 @@ class Partners(Base):
         return [self.name, self.surname, self.profile_link]
 
 
-class Favorite_partners(Base):
+class FavoritePartners(Base):
     __tablename__ = 'favorite_partners'
 
     user_vk_id = sq.Column(sq.Integer, sq.ForeignKey('user_vk.user_vk_id', ondelete='CASCADE'), nullable=False)
     partner_vk_id = sq.Column(sq.Integer, sq.ForeignKey('partners.partner_vk_id', ondelete='CASCADE'), nullable=False)
-    user_vk = relationship(User_vk, backref='Favorite_partners')
+    user_vk = relationship(UserVk, backref='Favorite_partners')
     partners = relationship(Partners, backref='Favorite_partners')
 
     __table_args__ = (
